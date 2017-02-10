@@ -20,7 +20,17 @@ Or install it yourself as:
 
 ## Usage
 
-I'll fill this in eventually.
+Simply configure this plugin as you would any other plugin. Without any options,
+the plugin is a no-op. You will want to use the `log` or `prevent_delivery` options
+to make the plugin useful.
+
+I like to pair this plugin with the [environments](http://roda.jeremyevans.net/rdoc/classes/Roda/RodaPlugins/Environments.html)
+plugin to configure depending on current `RACK_ENV`.
+
+    plugin :environments
+    plugin :mailer_ext,
+      log: (development? or production?),
+      prevent_delivery: !production?
 
 ## Contributing
 
