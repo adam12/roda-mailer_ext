@@ -4,7 +4,7 @@ A few helpful extensions to the Roda mailer plugin.
 
 ## Installation
 
-Add this line ot your application's Gemfile:
+Add this line to your application's Gemfile:
 
 ```ruby
 gem "roda-mailer_ext"
