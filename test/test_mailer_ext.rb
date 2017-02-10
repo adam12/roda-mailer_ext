@@ -14,7 +14,7 @@ class TestMailerExt < Minitest::Test
             to      "test@example.com"
             subject "Foo"
 
-            render(inline: "The body")
+            render  inline: "The body"
           end
         end
       end
@@ -30,5 +30,26 @@ class TestMailerExt < Minitest::Test
   def test_delivery_prevention
     @app.sendmail("/mail/test")
     refute_empty Mail::TestMailer.deliveries
+  end
+
+  def test_callable_log
+    logger = Class.new do
+      attr_reader :messages
+
+      def initialize
+        @messages = []
+      end
+
+      def call(message)
+        @messages << "[To: #{message.to.join(", ")}] #{message.subject}"
+      end
+    end.new
+
+    @app.opts[:mailer_ext][:log] = logger
+
+    @app.sendmail("/mail/test")
+
+    refute_empty logger.messages
+    assert_match %r(To: test@example.com), logger.messages.first
   end
 end

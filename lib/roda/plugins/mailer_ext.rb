@@ -13,7 +13,9 @@ module Roda::RodaPlugins # :nodoc:
   #
   # The following plugin options are supported:
   #
-  # :log :: Output the body of the email to STDOUT before delivery
+  # :log :: When true, output the body of the email to STDOUT before delivery.
+  #         If passed an object that responds to +call+, it will be called with
+  #         the email object.
   # :prevent_delivery :: Uses the +Mail+ test mailer instead of actually
   #                      attempting the delivery to a SMTP server.
   #
@@ -34,7 +36,17 @@ module Roda::RodaPlugins # :nodoc:
       end
 
       def _log_mail(message)
-        puts <<~EOM
+        log = roda_class.opts[:mailer_ext][:log]
+
+        if log.respond_to?(:call)
+          log.call(message)
+        else
+          puts(_format_mail(message))
+        end
+      end
+
+      def _format_mail(message)
+        <<~EOM
 
         ==> Sending email to #{message.to.join(", ")}
         #{message}
@@ -52,7 +64,7 @@ module Roda::RodaPlugins # :nodoc:
     end
 
     def self.configure(app, opts = {}) # :nodoc:
-      app.opts[:mailer_ext] = { log: false, prevent_delivery: false }.merge(opts).freeze
+      app.opts[:mailer_ext] = { log: false, prevent_delivery: false }.merge(opts)
 
       if app.opts[:mailer_ext][:prevent_delivery]
         Mail.defaults do
