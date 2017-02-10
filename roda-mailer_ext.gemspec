@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.homepage       = "https://github.com/adam12/roda-mailer_ext"
   spec.license        = "MIT"
 
-  spec.files          = Dir["lib/**/*.rb"]
+  spec.files          = ["README.md", "Rakefile"] + Dir["lib/**/*.rb"]
   spec.require_paths  = ["lib"]
 
   spec.add_dependency "roda", "~> 2.0"
